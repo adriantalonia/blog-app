@@ -1,3 +1,32 @@
 spring:
   application:
     name: blog-app
+
+  profiles:
+    active: ${APP_PROFILE:dev}
+
+  datasource:
+    url: jdbc:postgresql://${DB_HOST:localhost}:${DB_PORT:5433}/${DB_NAME:blog_db}
+    username: ${DB_USERNAME:postgres}
+    password: ${DB_PASSWORD:postgres}
+    driver-class-name: org.postgresql.Driver
+
+    hikari:
+      pool-name: HikariPool-${spring.application.name}
+      minimum-idle: ${DB_POOL_MIN_IDLE:2}
+      maximum-pool-size: ${DB_POOL_MAX_SIZE:10}
+      connection-timeout: 30000
+      idle-timeout: 600000
+      max-lifetime: 1800000
+      validation-timeout: 5000
+      leak-detection-threshold: 60000
+
+    jpa:
+      hibernate:
+        ddl-auto: ${JPA_DDL_AUTO:update} # ⚠️ Only safe for dev
+      show-sql: ${JPA_SHOW_SQL:false}
+      properties:
+        hibernate:
+          format_sql: true
+          dialect: org.hibernate.dialect.PostgreSQLDialect
+      open-in-view: false # Prevents lazy-loading anti-patterns
