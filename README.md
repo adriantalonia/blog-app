@@ -48,10 +48,17 @@ The application configuration is managed in `src/main/resources/application.yaml
 
 | Variable / Property | Description | Default Value |
 |---------------------|-------------|---------------|
-| `spring.application.name` | The name of the application | `blog-app` |
-| `TODO` | Database connection details (JDBC URL, username, password) | `None (Configure in application.yaml)` |
+| `APP_PROFILE` | Spring application profile | `dev` |
+| `SERVER_PORT` | Port for the web server | `8080` |
+| `DB_HOST` | Database host | `localhost` |
+| `DB_PORT` | Database port | `5433` |
+| `DB_NAME` | Database name | `blog_db` |
+| `DB_USERNAME` | Database user | `postgres` |
+| `DB_PASSWORD` | Database password | `postgres` |
+| `JPA_DDL_AUTO` | Hibernate DDL generation strategy | `update` |
+| `JPA_SHOW_SQL` | Log SQL queries | `false` |
 
-> **Note**: Currently, `application.yaml` only defines the application name. Database credentials and other environment-specific configurations should be added to this file or passed via environment variables.
+> **Note**: Database credentials and other environment-specific configurations are pre-configured for a local development environment. You can override them using environment variables or by modifying `application.yaml`.
 
 ## Tests
 The project includes automated tests using JUnit and Spring Boot's testing support.
@@ -71,6 +78,14 @@ blog-app/
 │   ├── main/
 │   │   ├── java/
 │   │   │   └── com/atrdev/blogapp/
+│   │   │       ├── config/              # Configuration classes (JPA, Security, etc.)
+│   │   │       ├── controller/          # REST Controllers
+│   │   │       ├── dto/                 # Data Transfer Objects
+│   │   │       ├── entity/              # JPA Data Entities (User, Post, Category, Tag)
+│   │   │       ├── enums/               # Enums (PostStatus, etc.)
+│   │   │       ├── mapper/              # MapStruct mappers
+│   │   │       ├── repository/          # Spring Data JPA Repositories
+│   │   │       ├── service/             # Service layer interfaces and implementations
 │   │   │       └── BlogAppApplication.java  # Application entry point
 │   │   └── resources/
 │   │       └── application.yaml             # Main configuration file
@@ -78,9 +93,28 @@ blog-app/
 ├── pom.xml                                  # Maven project descriptor
 ├── mvnw                                     # Maven wrapper (UNIX)
 ├── mvnw.cmd                                 # Maven wrapper (Windows)
-├── docker-compose.yml                       # Docker configuration (Currently empty)
+├── docker-compose.yml                       # Docker configuration for infrastructure
 └── README.md                                # This file
 ```
+
+## Core Entities
+The application core logic revolves around these main entities:
+- **User**: Represents authors and registered users.
+- **Post**: Represents blog content, authored by a User, belongs to a Category, and can have multiple Tags.
+- **Category**: Used to group Posts into high-level topics.
+- **Tag**: Keywords for classifying and searching Posts.
+
+### Relationships
+- **Post** → **User**: Many-to-One (Author)
+- **Post** → **Category**: Many-to-One
+- **Post** ↔ **Tag**: Many-to-Many
+- **Category** → **Post**: One-to-Many
+- **Tag** → **Post**: Many-to-Many (Bidirectional)
+
+## API Endpoints
+
+### Categories
+- `GET /api/v1/categories`: List all categories. Includes the `postCount` (number of published posts) for each category.
 
 ## License
 [TODO: Add license information, e.g., MIT, Apache-2.0]
