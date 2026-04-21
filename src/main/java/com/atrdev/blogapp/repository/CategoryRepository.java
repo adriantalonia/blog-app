@@ -17,5 +17,8 @@ public interface CategoryRepository extends JpaRepository<Category, UUID> {
 
     // Alternative
     @EntityGraph(attributePaths = {"posts"})
+    @Query("SELECT c FROM Category c")
     List<Category> findAllWithPosts();
+
+    boolean existsByNameIgnoreCase(String name);
 }

@@ -1,10 +1,15 @@
 package com.atrdev.blogapp.controller;
 
 import com.atrdev.blogapp.dto.CategoryDTO;
+import com.atrdev.blogapp.dto.CategoryRequest;
 import com.atrdev.blogapp.service.CategoryService;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -20,5 +25,10 @@ public class CategoryController {
     @GetMapping
     public ResponseEntity<List<CategoryDTO>> listCategories() {
         return ResponseEntity.ok().body(categoryService.listCategories());
+    }
+
+    @PostMapping
+    public ResponseEntity<CategoryDTO> createCategory(@Valid @RequestBody CategoryRequest categoryRequest) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(categoryService.createCategory(categoryRequest));
     }
 }

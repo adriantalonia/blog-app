@@ -1,9 +1,11 @@
 package com.atrdev.blogapp.config;
 
 import org.springframework.context.annotation.Configuration;
+import org.springframework.data.jpa.repository.config.EnableJpaAuditing;
 import org.springframework.data.jpa.repository.config.EnableJpaRepositories;
 
 @Configuration
-@EnableJpaRepositories
+@EnableJpaRepositories(basePackages = "com.atrdev.blogapp.repository")
+@EnableJpaAuditing
 public class JpaConfig {
 }

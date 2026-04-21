@@ -1,6 +1,7 @@
 package com.atrdev.blogapp.mapper;
 
 import com.atrdev.blogapp.dto.CategoryDTO;
+import com.atrdev.blogapp.dto.CategoryRequest;
 import com.atrdev.blogapp.entity.Category;
 import com.atrdev.blogapp.entity.Post;
 import com.atrdev.blogapp.enums.PostStatus;
@@ -18,6 +19,8 @@ public interface CategoryMapper {
     CategoryDTO categoryToCategoryDTO(Category category);
 
     List<CategoryDTO> toCategoryDTOList(List<Category> categories);
+
+    Category categoryRequestToCategory(CategoryRequest categoryRequest);
 
     @Named("calculatePostCount")
     default long calculatePostCount(List<Post> posts) {

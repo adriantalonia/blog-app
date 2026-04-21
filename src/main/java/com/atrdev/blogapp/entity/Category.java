@@ -4,6 +4,7 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -15,7 +16,9 @@ import java.util.List;
 import java.util.Objects;
 
 @Entity
-@Table(name = "categories")
+@Table(name = "categories", uniqueConstraints = @UniqueConstraint(
+        columnNames = "name",
+        name = "uk_category_name"))
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
@@ -23,7 +26,7 @@ import java.util.Objects;
 @Setter
 public class Category extends BaseEntity {
 
-    @Column(nullable = false, unique = true)
+    @Column(nullable = false)
     private String name;
 
     @Column(nullable = false)
