@@ -115,6 +115,14 @@ The application core logic revolves around these main entities:
 
 ### Categories
 - `GET /api/v1/categories`: List all categories. Includes the `postCount` (number of published posts) for each category.
+- `POST /api/v1/categories`: Create a new category.
+- `DELETE /api/v1/categories/{id}`: Delete a category by ID. (Note: Only categories with no associated posts can be deleted).
+
+## Error Handling
+The application uses **RFC 7807 Problem Details** for error responses. 
+- **Resource Not Found**: Returned when a requested entity does not exist (Status 404).
+- **Conflict**: Returned when a business rule is violated, such as deleting a category with existing posts (Status 409).
+- **Internal Server Error**: For any other unhandled exceptions (Status 500).
 
 ## License
 [TODO: Add license information, e.g., MIT, Apache-2.0]
