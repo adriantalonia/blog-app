@@ -8,7 +8,7 @@
 - **Framework**: Spring Boot 4.0.5
 - **Build Tool**: Apache Maven
 - **Database**: PostgreSQL (Runtime), H2 (Test)
-- **Other libraries**: Lombok, Spring Validation
+- **Other libraries**: Lombok, Spring Validation, Spring Security, JJWT (JSON Web Token)
 
 ## Requirements
 To build and run this application, you will need:
@@ -85,6 +85,7 @@ blog-app/
 │   │   │       ├── enums/               # Enums (PostStatus, etc.)
 │   │   │       ├── mapper/              # MapStruct mappers
 │   │   │       ├── repository/          # Spring Data JPA Repositories
+│   │   │       ├── security/            # Security-related classes (UserDetails, etc.)
 │   │   │       ├── service/             # Service layer interfaces and implementations
 │   │   │       └── BlogAppApplication.java  # Application entry point
 │   │   └── resources/
@@ -117,6 +118,13 @@ The application core logic revolves around these main entities:
 - `GET /api/v1/categories`: List all categories. Includes the `postCount` (number of published posts) for each category.
 - `POST /api/v1/categories`: Create a new category.
 - `DELETE /api/v1/categories/{id}`: Delete a category by ID. (Note: Only categories with no associated posts can be deleted).
+
+## Security
+The application is secured using **Spring Security** with **JWT-based stateless authentication**.
+
+- **Public Endpoints**: `GET` requests to `/api/v1/posts/**`, `/api/v1/categories/**`, and `/api/v1/tags/**` are permitted without authentication.
+- **Protected Endpoints**: All other requests (e.g., creating, updating, or deleting resources) require a valid authentication token.
+- **User Management**: Uses a custom `UserDetailsService` that retrieves user information from the database via the `UserRepository`.
 
 ## Error Handling
 The application uses **RFC 7807 Problem Details** for error responses. 
