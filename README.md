@@ -114,6 +114,9 @@ The application core logic revolves around these main entities:
 
 ## API Endpoints
 
+### Authentication
+- `POST /api/v1/auth`: Authenticate a user and return a JWT token.
+
 ### Categories
 - `GET /api/v1/categories`: List all categories. Includes the `postCount` (number of published posts) for each category.
 - `POST /api/v1/categories`: Create a new category.
@@ -128,6 +131,7 @@ The application is secured using **Spring Security** with **JWT-based stateless 
 
 ## Error Handling
 The application uses **RFC 7807 Problem Details** for error responses. 
+- **Authentication Failure**: Returned when invalid credentials are provided (Status 401).
 - **Resource Not Found**: Returned when a requested entity does not exist (Status 404).
 - **Conflict**: Returned when a business rule is violated, such as deleting a category with existing posts (Status 409).
 - **Internal Server Error**: For any other unhandled exceptions (Status 500).
