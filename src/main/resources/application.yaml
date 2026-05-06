@@ -33,3 +33,10 @@ spring:
 
 server:
   port: ${SERVER_PORT:8080}
+
+app:
+  security:
+    jwt:
+      secret: ${JWT_SECRET:1q2w3e4r5t6y7u8i9o0pqawsedrftgyhujikolpazsxdcfvgbhnjmkl}          # 256-bit Base64 key from env/Vault
+      expiration-ms: 900000          # 15 min access token
+      refresh-expiration-ms: 604800000  # 7 days refresh token

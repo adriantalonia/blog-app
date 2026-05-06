@@ -65,8 +65,8 @@ public class GlobalExceptionHandler {
     public ProblemDetail handleBadCredentials(
             BadCredentialsException ex, HttpServletRequest request) {
         ProblemDetail problem = ProblemDetail
-                .forStatusAndDetail(HttpStatus.UNAUTHORIZED, ex.getMessage());
-        problem.setTitle("Incorrect username or password");
+                .forStatusAndDetail(HttpStatus.UNAUTHORIZED, "Incorrect username or password");
+        problem.setTitle(ex.getMessage());
         problem.setInstance(URI.create(request.getRequestURI()));
         problem.setProperty("timestamp", Instant.now());
         return problem;

@@ -57,6 +57,9 @@ The application configuration is managed in `src/main/resources/application.yaml
 | `DB_PASSWORD` | Database password | `postgres` |
 | `JPA_DDL_AUTO` | Hibernate DDL generation strategy | `update` |
 | `JPA_SHOW_SQL` | Log SQL queries | `false` |
+| `JWT_SECRET` | Secret key for JWT signing | `1q2w3e4r5t6y7u8i9o0pqawsedrftgyhujikolpazsxdcfvgbhnjmkl` |
+| `JWT_EXPIRATION_MS` | Access token expiration (ms) | `900000` (15 min) |
+| `JWT_REFRESH_EXPIRATION_MS` | Refresh token expiration (ms) | `604800000` (7 days) |
 
 > **Note**: Database credentials and other environment-specific configurations are pre-configured for a local development environment. You can override them using environment variables or by modifying `application.yaml`.
 
@@ -125,9 +128,13 @@ The application core logic revolves around these main entities:
 ## Security
 The application is secured using **Spring Security** with **JWT-based stateless authentication**.
 
+- **Authentication**: A `POST /api/v1/auth` request with valid credentials returns a JWT token in the `Authorization` header (Bearer token).
 - **Public Endpoints**: `GET` requests to `/api/v1/posts/**`, `/api/v1/categories/**`, and `/api/v1/tags/**` are permitted without authentication.
 - **Protected Endpoints**: All other requests (e.g., creating, updating, or deleting resources) require a valid authentication token.
 - **User Management**: Uses a custom `UserDetailsService` that retrieves user information from the database via the `UserRepository`.
+- **Development Test User**: For development purposes, a test user is automatically created if it doesn't exist:
+  - **Email**: `user@test.com`
+  - **Password**: `password`
 
 ## Error Handling
 The application uses **RFC 7807 Problem Details** for error responses. 

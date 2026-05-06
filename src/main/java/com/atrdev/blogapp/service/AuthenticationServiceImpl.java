@@ -29,7 +29,7 @@ public class AuthenticationServiceImpl implements AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final UserDetailsService userDetailsService;
 
-    @Value("${jwt.secret}")
+    @Value("${app.security.jwt.secret}")
     private String secretKey;
 
     private final Long jwtExpirationMs = 8640000L;
