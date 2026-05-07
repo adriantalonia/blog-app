@@ -125,6 +125,9 @@ The application core logic revolves around these main entities:
 - `POST /api/v1/categories`: Create a new category.
 - `DELETE /api/v1/categories/{id}`: Delete a category by ID. (Note: Only categories with no associated posts can be deleted).
 
+### Tags
+- `GET /api/v1/tags`: List all tags. Includes the `postCount` for each tag.
+
 ## Security
 The application is secured using **Spring Security** with **JWT-based stateless authentication**.
 
