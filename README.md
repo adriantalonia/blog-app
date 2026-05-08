@@ -127,6 +127,7 @@ The application core logic revolves around these main entities:
 
 ### Tags
 - `GET /api/v1/tags`: List all tags. Includes the `postCount` for each tag.
+- `POST /api/v1/tags`: Bulk create new tags. Accepts a list of tag names.
 
 ## Security
 The application is secured using **Spring Security** with **JWT-based stateless authentication**.

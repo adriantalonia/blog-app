@@ -26,7 +26,7 @@ public class Tag extends BaseEntity {
     @Column(nullable = false, unique = true)
     private String name;
 
-    @Column(nullable = false)
+    @Column(nullable = true)
     private String description;
 
     @ManyToMany(mappedBy = "tags")

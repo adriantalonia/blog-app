@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
+import java.util.Set;
 import java.util.UUID;
 
 @Repository
@@ -15,4 +16,6 @@ public interface TagRepository extends JpaRepository<Tag, UUID> {
     @EntityGraph(attributePaths = {"posts"})
     @Query("SELECT c FROM Tag c")
     List<Tag> findAllWithPosts();
+
+    List<Tag> findByNameIn(Set<String> names);
 }
