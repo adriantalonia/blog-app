@@ -128,6 +128,14 @@ The application core logic revolves around these main entities:
 ### Tags
 - `GET /api/v1/tags`: List all tags. Includes the `postCount` for each tag.
 - `POST /api/v1/tags`: Bulk create new tags. Accepts a list of tag names.
+- `DELETE /api/v1/tags/{id}`: Delete a tag by ID. (Note: Only tags with no associated posts can be deleted).
+
+### Posts
+- `GET /api/v1/posts`: List all published posts. 
+  - **Optional Query Parameters**:
+    - `categoryId`: Filter posts by category ID.
+    - `tagId`: Filter posts by tag ID.
+  - Can be combined to filter by both category and tag.
 
 ## Security
 The application is secured using **Spring Security** with **JWT-based stateless authentication**.

@@ -2,7 +2,9 @@ package com.atrdev.blogapp.service;
 
 import com.atrdev.blogapp.dto.TagResponse;
 import com.atrdev.blogapp.entity.Tag;
+import com.atrdev.blogapp.exception.ResourceNotFoundException;
 import com.atrdev.blogapp.mapper.TagMapper;
+import com.atrdev.blogapp.repository.PostRepository;
 import com.atrdev.blogapp.repository.TagRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -12,6 +14,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -19,6 +22,7 @@ import java.util.stream.Collectors;
 public class TagServiceImpl implements TagService {
 
     private final TagRepository tagRepository;
+    private final PostRepository postRepository;
     private final TagMapper tagMapper;
 
     @Override
@@ -47,5 +51,28 @@ public class TagServiceImpl implements TagService {
         savedTags.addAll(existingTags);
 
         return tagMapper.toResponseList(savedTags);
+    }
+
+    @Override
+    @Transactional
+    public void deleteTag(UUID id) {
+        Tag tag = tagRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("Tag", id));
+        // 1) first approach - lazy loading
+        /* if (!tag.getPosts().isEmpty()) {
+            throw new IllegalStateException("Cannot delete tag with posts");
+        }*/
+
+        // 2) use a count query
+        if(postRepository.existsById(id)) {
+            throw new IllegalStateException("Cannot delete tag with posts");
+        }
+        tagRepository.delete(tag);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Tag getTabById(UUID id) {
+        return tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag", id));
     }
 }

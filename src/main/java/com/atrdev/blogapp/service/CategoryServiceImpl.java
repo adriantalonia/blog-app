@@ -48,6 +48,11 @@ public class CategoryServiceImpl implements CategoryService {
         categoryRepository.deleteById(id);
     }
 
+    @Override
+    public Category getCategoryById(UUID id) {
+        return categoryRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category", id));
+    }
+
     /*@Override
     public CategoryDTO createCategory(CategoryRequest categoryRequest) {
         try {
