@@ -64,7 +64,7 @@ public class TagServiceImpl implements TagService {
         }*/
 
         // 2) use a count query
-        if(postRepository.existsById(id)) {
+        if (postRepository.existsById(id)) {
             throw new IllegalStateException("Cannot delete tag with posts");
         }
         tagRepository.delete(tag);
@@ -74,5 +74,14 @@ public class TagServiceImpl implements TagService {
     @Transactional(readOnly = true)
     public Tag getTabById(UUID id) {
         return tagRepository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Tag", id));
+    }
+
+    @Override
+    public List<Tag> getTagByIds(Set<UUID> ids) {
+        List<Tag> foundTags = tagRepository.findAllById(ids);
+        if (foundTags.size() != ids.size()) {
+            throw new ResourceNotFoundException("No all specified tag IDs exist, Tags", null);
+        }
+        return foundTags;
     }
 }

@@ -1,5 +1,7 @@
 package com.atrdev.blogapp.mapper;
 
+import com.atrdev.blogapp.dto.CreatePostRequest;
+import com.atrdev.blogapp.dto.PostRequest;
 import com.atrdev.blogapp.dto.PostResponse;
 import com.atrdev.blogapp.entity.Post;
 import org.mapstruct.Mapper;
@@ -18,4 +20,6 @@ public interface PostMapper {
     PostResponse toResponse(Post post);
 
     List<PostResponse> toResponseList(List<Post> posts);
+
+    CreatePostRequest toCreatePostRequest(PostRequest postRequest);
 }

@@ -5,10 +5,54 @@
 
 ## Tech Stack
 - **Language**: Java 23
-- **Framework**: Spring Boot 4.0.5
+- **Framework**: Spring Boot 3.4.1 (Latest)
 - **Build Tool**: Apache Maven
-- **Database**: PostgreSQL (Runtime), H2 (Test)
-- **Other libraries**: Lombok, Spring Validation, Spring Security, JJWT (JSON Web Token)
+- **Database**: PostgreSQL 17 (Containerized), H2 (In-memory for tests)
+- **Security**: Spring Security 6.x, JJWT (JSON Web Token)
+- **Object Mapping**: MapStruct 1.6.3
+- **Infrastructure**: Docker & Docker Compose
+- **Other libraries**: Lombok, Spring Validation, Hibernate (JPA)
+
+## Architecture & Design
+The application follows a standard N-Tier architecture:
+- **Presentation Layer**: REST Controllers handling HTTP requests/responses and using DTOs for data transfer.
+- **Service Layer**: Contains core business logic, transactional management, and coordinates between repositories and mappers.
+- **Data Access Layer**: Spring Data JPA Repositories for database interaction.
+- **Cross-cutting Concerns**: Global exception handling, JWT-based security, and MapStruct for entity-DTO mapping.
+
+### Key Business Logic
+- **Post Reading Time**: Automatically calculated whenever a post is created or updated. It uses a base rate of 200 words per minute.
+- **Post Status Workflow**: Supports `DRAFT` and `PUBLISHED` statuses. Only `PUBLISHED` posts are visible via the public API, while `DRAFT` posts are reserved for the author.
+- **Dynamic Filtering**: Posts can be filtered by Category, Tag, or both simultaneously using JPA-backed query methods.
+- **Data Integrity**: Categories and Tags cannot be deleted if they are associated with any posts, ensuring referential integrity at the application level.
+
+## Database Schema & Relationships
+The project uses a relational schema with the following key relationships:
+- **One-to-Many**: `Category` → `Post` (A category can have many posts).
+- **Many-to-Many**: `Post` ↔ `Tag` (Posts can have multiple tags, and tags can be shared across posts).
+- **Many-to-One**: `Post` → `User` (Each post is authored by a single user).
+
+### Query Optimization
+- **Post Counts**: Category and Tag listings include a `postCount` field. This is optimized using `JOIN FETCH` or `@EntityGraph` in repositories to avoid N+1 select problems.
+
+## Infrastructure & Docker
+The project includes a `docker-compose.yml` file to quickly spin up the required infrastructure.
+
+### Services Included:
+- **PostgreSQL**: The primary database, accessible on port `5433`.
+- **Adminer**: A lightweight database management tool accessible at [http://localhost:8888](http://localhost:8888).
+
+To start the infrastructure:
+```bash
+docker-compose up -d
+```
+
+## Security Implementation
+The application implements a stateless authentication flow using **JWT (JSON Web Tokens)**:
+1. **Authentication**: User submits credentials to `/api/v1/auth`.
+2. **Token Generation**: Upon success, the server generates a signed JWT.
+3. **Authorization**: For protected routes, the client must include the token in the `Authorization: Bearer <token>` header.
+4. **Validation**: The `JwtAuthenticationFilter` interceptor validates the token on every request.
 
 ## Requirements
 To build and run this application, you will need:
@@ -135,14 +179,18 @@ The application core logic revolves around these main entities:
   - **Optional Query Parameters**:
     - `categoryId`: Filter posts by category ID.
     - `tagId`: Filter posts by tag ID.
-  - Can be combined to filter by both category and tag.
+- `GET /api/v1/posts/{id}`: Get a specific post by ID.
+- `GET /api/v1/posts/drafts`: List all draft posts for the authenticated user.
+- `POST /api/v1/posts`: Create a new post. Automatically calculates reading time based on content.
+- `PUT /api/v1/posts/{id}`: Update an existing post.
+- `DELETE /api/v1/posts/{id}`: Delete a post by ID.
 
 ## Security
 The application is secured using **Spring Security** with **JWT-based stateless authentication**.
 
 - **Authentication**: A `POST /api/v1/auth` request with valid credentials returns a JWT token in the `Authorization` header (Bearer token).
-- **Public Endpoints**: `GET` requests to `/api/v1/posts/**`, `/api/v1/categories/**`, and `/api/v1/tags/**` are permitted without authentication.
-- **Protected Endpoints**: All other requests (e.g., creating, updating, or deleting resources) require a valid authentication token.
+- **Public Endpoints**: `GET` requests to `/api/v1/posts` (excluding drafts), `/api/v1/posts/{id}`, `/api/v1/categories/**`, and `/api/v1/tags/**` are permitted without authentication.
+- **Protected Endpoints**: All other requests (e.g., creating, updating, or deleting resources, and accessing drafts) require a valid authentication token.
 - **User Management**: Uses a custom `UserDetailsService` that retrieves user information from the database via the `UserRepository`.
 - **Development Test User**: For development purposes, a test user is automatically created if it doesn't exist:
   - **Email**: `user@test.com`
